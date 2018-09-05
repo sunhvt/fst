@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+        
+	<title>Document</title>
+	<style type="text/css">
+        *{margin: 0;padding: 0;font-size: 16px;}
+        ul{list-style: none;}
+        li{padding: 6px 5px 6px 5px;text-indent:2em}
+        ul li:nth-child(odd){background-color:black;color: white;}
+        ul li:nth-child(even){background-color:#dddddd;color: black;}
+        </style>
+	<script src='js/zepto.1.2.0.min.js'></script>
+</head>
+<body>
+<!-- <input type="text" name="n"> -->
+	<div>请选择题型</div>
+    <input type="radio" id="radio1" name="radio1" value="1" checked/>单选
+    <input type="radio" id="radio2" name="radio1" value="2" />多选
+    <input type="radio" id="radio3" name="radio1" value="3" />判断
+<div>
+	请输入题目中的文字
+</div>
+<div>
+    <input type="text" id="username" autoComplete='off' placeholder="请输入题目中连续的文字">
+    <div id="result"></div>
+</div>
+ <script>
+  $.ajax({
+  	url:'json/1.json',
+  	success:function(data){
+  		//  var s=JSON.stringify(data);
+  		// localStorage.setItem('data',s);
+  		// s=JSON.parse(localStorage.getItem("data"));
+  	var sp=data;
+  	var s=[];
+  	for(var j=0;j<sp.length;j++){
+  		s[j]=sp[j].timu.split('#');
+  	}
+  	var len = s.length;
+		var la=1;
+		$('#radio1').click(function(){la=$(this).val(),sele()})
+
+		$('#radio2').click(function(){la=$(this).val(),sele()})
+        $('#radio3').click(function(){la=$(this).val(),sele()})
+
+		function sele(){
+			$('#result').html("");$('#username').val("");
+		}
+	    sele();
+
+//"timu":"中国中央国务院于2017年9月5日印发了《关于开展质量提升行动的指导意见》，提出的基本原则有()。#坚持以质量第一为价值导向#坚持以满足人民群众需求和增强国家综合实力为根本目的#检测出以企业为质量提升主体#坚持以改革创新为根本途径"
+
+		$('#username').bind('input propertychange', function() {
+		   	var ss = $(this).val(),str="";
+			if(ss.length){
+				str = "<ul>"
+				for(var i = 0; i < len; i++) {
+				   // if(s[i].type!=la)continue;
+				 	if(s[i][0].match(ss)) {
+				 		str += "<li>" +s[i][0]+ "</li>";
+				 		switch(s[i].length){
+				 			case 2:str += "<li>" +s[i][1]+ "</li>";break;
+				 			default:
+				 			    str+="<li>";
+				 			    for(var j=1;j<s[i].length;j++){
+				 			    	str+="<p>"+s[i][j]+"</p>";
+				 			    }
+				 			    str+="</li>";
+				 			    break;
+				 		}
+				 	}
+				 }
+				str += "</ul>";
+			}
+
+
+			$('#result').html(str);
+		});
+  	}
+  });
+ 
+
+</script>	
+</body>
+</html>
